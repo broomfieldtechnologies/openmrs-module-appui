@@ -30,6 +30,14 @@
             <artifactId>openmrs-web</artifactId>
             <type>test-jar</type>
         </dependency>
+        			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openMRSVersion}</version>
+				<scope>system</scope>
+				<systemPath>/Users/subashini/.m2/repository/org/openmrs/api/openmrs-api/2.3.0/openmrs-api-2.3.0.jar</systemPath>
+			</dependency>
+        
 
     </dependencies>
 
