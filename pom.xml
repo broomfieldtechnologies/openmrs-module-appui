@@ -36,7 +36,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <uiframeworkVersion>3.11.0</uiframeworkVersion>
         <appframeworkVersion>2.9</appframeworkVersion>
-        <openMRSVersion>1.12.0</openMRSVersion>
+        <openMRSVersion>2.3.0</openMRSVersion>
         <serialization.xstreamVersion>0.2.12</serialization.xstreamVersion>
         <webservices.restVersion>2.16</webservices.restVersion>
     </properties>
@@ -47,7 +47,8 @@
 				<groupId>org.openmrs.api</groupId>
 				<artifactId>openmrs-api</artifactId>
 				<version>${openMRSVersion}</version>
-				<scope>provided</scope>
+				<scope>system</scope>
+				<systemPath>/Users/subashini/.m2/repository/org/openmrs/api/openmrs-api/2.3.0/openmrs-api-2.3.0.jar</systemPath>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
@@ -67,7 +68,8 @@
 				<groupId>org.openmrs.web</groupId>
 				<artifactId>openmrs-web</artifactId>
 				<version>${openMRSVersion}</version>
-				<scope>provided</scope>
+				<systemPath>/Users/subashini/.m2/repository/org/openmrs/web/openmrs-web/2.3.0/openmrs-web-2.3.0.jar</systemPath>
+				<scope>system</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
@@ -165,6 +167,14 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>serialization.xstream-api-2.0</artifactId>
         </dependency>
+        <dependency>
+        	<groupId>bft.openmrs.module</groupId>
+        	<artifactId>enterprise</artifactId>
+        	<version>1.0.0-SNAPSHOT</version>
+        	<scope>system</scope>
+        	<systemPath>/Users/subashini/.m2/repository/bft/openmrs/module/enterprise-omod/1.0.0-SNAPSHOT/enterprise-omod-1.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        
 
     </dependencies>
 
