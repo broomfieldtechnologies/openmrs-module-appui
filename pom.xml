@@ -39,6 +39,8 @@
         <openMRSVersion>1.12.0</openMRSVersion>
         <serialization.xstreamVersion>0.2.12</serialization.xstreamVersion>
         <webservices.restVersion>2.16</webservices.restVersion>
+        <enterpriseModuleVersion>1.0.0-SNAPSHOT</enterpriseModuleVersion>
+        
     </properties>
 
     <dependencyManagement>
@@ -118,6 +120,12 @@
 				<version>${serialization.xstreamVersion}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>bft.openmrs.module</groupId>
+				<artifactId>enterprise-api</artifactId>
+				<version>${enterpriseModuleVersion}</version>
+				<scope>provided</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -165,7 +173,10 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>serialization.xstream-api-2.0</artifactId>
         </dependency>
-
+		<dependency>
+            <groupId>bft.openmrs.module</groupId>
+            <artifactId>enterprise-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

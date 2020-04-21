@@ -95,6 +95,8 @@
             <img src="${ logoIconUrl }"/>
         </a>
     </div>
+    <div>${enterpriseName}</div>
+    
     <% if (context.authenticated) { %>
     <ul class="user-options">
         <li class="identifier">
