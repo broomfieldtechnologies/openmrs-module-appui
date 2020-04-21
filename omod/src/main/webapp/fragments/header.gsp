@@ -119,7 +119,6 @@
             <img src="${ logoIconUrl }"/>
         </a>
     </div>
-    <div>${enterpriseName}</div>
     
     <% if (context.authenticated) { %>
 
@@ -131,6 +130,10 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto user-options">
+                    <li class="enterprise-name">
+                    	${enterpriseName}
+                    </li>
+          
                     <li class="nav-item identifier">
         <% } else { %>
                     <ul class="user-options">
