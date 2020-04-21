@@ -119,6 +119,8 @@
             <img src="${ logoIconUrl }"/>
         </a>
     </div>
+    <div>${enterpriseName}</div>
+    
     <% if (context.authenticated) { %>
 
         <% if (useBootstrap) { %>
