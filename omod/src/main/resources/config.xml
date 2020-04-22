@@ -29,6 +29,9 @@
         <require_module version="${webservicesRestVersion}">
             org.openmrs.module.webservices.rest
         </require_module>
+        <require_module version="${enterpriseModuleVersion}">
+            org.openmrs.module.enterprise
+        </require_module>
 	</require_modules>
 	<!-- / Required Modules -->
 	

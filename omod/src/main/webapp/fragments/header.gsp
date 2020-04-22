@@ -95,6 +95,7 @@
             <img src="${ logoIconUrl }"/>
         </a>
     </div>
+    
     <% if (context.authenticated) { %>
     <ul class="user-options">
         <li class="identifier">
@@ -112,6 +113,9 @@
                     <% } %>
                 </ul>
             <% } %>
+        </li>
+        <li class="enterprise-name">
+        	${enterpriseName}
         </li>
         <li class="change-location">
             <a href="javascript:void(0);">

@@ -14,11 +14,16 @@
 
 package org.openmrs.module.appui.fragment.controller;
 
+import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.domain.Extension;
 import org.openmrs.module.appframework.service.AppFrameworkService;
 import org.openmrs.module.appui.AppUiConstants;
 import org.openmrs.module.appui.AppUiExtensions;
+import org.openmrs.module.enterprise.Enterprise;
+import org.openmrs.module.enterprise.api.EnterpriseService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
@@ -36,7 +41,8 @@ public class HeaderFragmentController {
     private static final String GET_LOCATIONS = "Get Locations";
     private static final String VIEW_LOCATIONS = "View Locations";
 
-    public void controller(@SpringBean AppFrameworkService appFrameworkService, FragmentModel fragmentModel) {
+    public void controller(@SpringBean AppFrameworkService appFrameworkService,
+    		@SpringBean EnterpriseService enterpriseService, FragmentModel fragmentModel) {
         try {
             Context.addProxyPrivilege(GET_LOCATIONS);
             Context.addProxyPrivilege(VIEW_LOCATIONS);
@@ -48,6 +54,8 @@ public class HeaderFragmentController {
             fragmentModel.addAttribute("configSettings", configSettings);
             List<Extension> userAccountMenuItems = appFrameworkService.getExtensionsForCurrentUser(AppUiExtensions.HEADER_USER_ACCOUNT_MENU_ITEMS_EXTENSION);
             fragmentModel.addAttribute("userAccountMenuItems", userAccountMenuItems);
+            fragmentModel.addAttribute("enterpriseName", getEnterpriseName(enterpriseService));
+
         } finally {
             Context.removeProxyPrivilege(GET_LOCATIONS);
             Context.removeProxyPrivilege(VIEW_LOCATIONS);
@@ -69,5 +77,15 @@ public class HeaderFragmentController {
         request.getSession().invalidate();
         request.getSession().setAttribute(AppUiConstants.SESSION_ATTRIBUTE_MANUAL_LOGOUT, "true");
     }
+    public String getEnterpriseName(EnterpriseService es) {
+    	EnterpriseService es1 = Context.getService(EnterpriseService.class);
+		User user = Context.getAuthenticatedUser();
+		Person person = user.getPerson();
+		PersonAttribute enterprisePersonAttribute = person.getAttribute("Enterprise");
+		String enterpriseIdGuid = enterprisePersonAttribute.getValue();
+    	Enterprise eps = es.getEnterpriseByUuid(enterpriseIdGuid);
 
+		return eps.getName();
+    	
+    }
 }
