@@ -98,6 +98,10 @@
     
     <% if (context.authenticated) { %>
     <ul class="user-options">
+       <li class="enterprise-name">
+        	${enterpriseName}
+        </li>
+  
         <li class="identifier">
             <i class="icon-user small"></i>
             ${context.authenticatedUser.username ?: context.authenticatedUser.systemId}
@@ -113,9 +117,6 @@
                     <% } %>
                 </ul>
             <% } %>
-        </li>
-        <li class="enterprise-name">
-        	${enterpriseName}
         </li>
         <li class="change-location">
             <a href="javascript:void(0);">
