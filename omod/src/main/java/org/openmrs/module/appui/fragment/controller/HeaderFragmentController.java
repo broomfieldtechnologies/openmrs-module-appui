@@ -14,9 +14,22 @@
 
 package org.openmrs.module.appui.fragment.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.User;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.domain.Extension;
 import org.openmrs.module.appframework.service.AppFrameworkService;
@@ -26,11 +39,6 @@ import org.openmrs.module.enterprise.Enterprise;
 import org.openmrs.module.enterprise.api.EnterpriseService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -50,6 +58,10 @@ public class HeaderFragmentController {
 
             List<Extension> exts = appFrameworkService.getExtensionsForCurrentUser(AppUiExtensions.HEADER_CONFIG_EXTENSION);
             Extension lowestOrderExtension = getLowestOrderExtenstion(exts);
+			
+			List<Location> loginLocations = appFrameworkService.getLoginLocations();
+			fragmentModel.addAttribute("locationsbyEnterprise", getLocationsbyEnterprise(loginLocations, enterpriseService));
+			
             Map<String, Object> configSettings = lowestOrderExtension.getExtensionParams();
             fragmentModel.addAttribute("configSettings", configSettings);
             List<Extension> userAccountMenuItems = appFrameworkService.getExtensionsForCurrentUser(AppUiExtensions.HEADER_USER_ACCOUNT_MENU_ITEMS_EXTENSION);
@@ -78,7 +90,7 @@ public class HeaderFragmentController {
         request.getSession().setAttribute(AppUiConstants.SESSION_ATTRIBUTE_MANUAL_LOGOUT, "true");
     }
     public String getEnterpriseName(EnterpriseService es) {
-    	EnterpriseService es1 = Context.getService(EnterpriseService.class);
+    	Context.getService(EnterpriseService.class);
 		User user = Context.getAuthenticatedUser();
 		Person person = user.getPerson();
 		PersonAttribute enterprisePersonAttribute = person.getAttribute("Enterprise");
@@ -88,4 +100,29 @@ public class HeaderFragmentController {
 		return eps.getName();
     	
     }
+	
+	public List<Location> getLocationsbyEnterprise(List<Location> locations, EnterpriseService es) {
+		List<Location> locationsbyEnterprise = new ArrayList<Location>();
+		User user = Context.getAuthenticatedUser();
+		PersonService ps = Context.getPersonService();
+		Person person = ps.getPerson(user.getId());
+		PersonAttribute enterprisePersonAttribute = person.getAttribute("Enterprise");
+		String enterpriseIdGuid = enterprisePersonAttribute.getValue();
+		Enterprise eps = es.getEnterpriseByUuid(enterpriseIdGuid);
+		String epsGuid = eps.getUuid();
+		LocationService ls = Context.getLocationService();
+		LocationAttributeType latForEnterprise = ls.getLocationAttributeTypeByName("Enterprise");
+
+		for (Location location : locations) {
+			Set<LocationAttribute> locationAttributes = location.getAttributes();
+			
+			for (LocationAttribute locationAttribute : locationAttributes) {
+				if (locationAttribute.getAttributeType().equals(latForEnterprise)
+				        && locationAttribute.getValueReference().equals(epsGuid)) {
+					locationsbyEnterprise.add(location);
+				}
+			}
+		}
+		return locationsbyEnterprise;
+	}
 }
