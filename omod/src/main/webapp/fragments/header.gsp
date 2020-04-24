@@ -10,7 +10,7 @@
     def logoIconUrl = addContextPath(configSettings?."logo-icon-url") ?: ui.resourceLink("uicommons", "images/logo/openmrs-with-title-small.png")
     def logoLinkUrl = addContextPath(configSettings?."logo-link-url") ?: "/${ org.openmrs.ui.framework.WebConstants.CONTEXT_PATH }/"
 
-    def multipleLoginLocations = (loginLocations.size > 1);
+    def multipleLoginLocations = (locationsbyEnterprise.size > 1);
 
     def enableUserAccountExt = userAccountMenuItems.size > 0;
 
@@ -140,7 +140,7 @@
             <img src="${ui.resourceLink("uicommons", "images/spinner.gif")}">
         </div>
         <ul class="select">
-            <% loginLocations.sort { ui.format(it) }.each {
+            <% locationsbyEnterprise.sort { ui.format(it) }.each {
                 def selected = (it == sessionContext.sessionLocation) ? "selected" : ""
             %>
             <li class="${selected}" locationUuid="${it.uuid}" locationId="${it.id}" locationName="${ui.encodeHtmlContent(ui.format(it))}">${ui.encodeHtmlContent(ui.format(it))}</li>
