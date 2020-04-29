@@ -25,12 +25,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
+import org.openmrs.LocationTag;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appframework.AppFrameworkConstants;
 import org.openmrs.module.appframework.domain.Extension;
 import org.openmrs.module.appframework.service.AppFrameworkService;
 import org.openmrs.module.appui.AppUiConstants;
@@ -39,6 +41,7 @@ import org.openmrs.module.enterprise.Enterprise;
 import org.openmrs.module.enterprise.api.EnterpriseService;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -54,14 +57,20 @@ public class HeaderFragmentController {
         try {
             Context.addProxyPrivilege(GET_LOCATIONS);
             Context.addProxyPrivilege(VIEW_LOCATIONS);
-            fragmentModel.addAttribute("loginLocations", appFrameworkService.getLoginLocations());
-
+            User user = Context.getAuthenticatedUser();
+    		PersonService ps = Context.getPersonService();
+    		Person person = ps.getPerson(user.getId());
+    		PersonAttribute enterprisePersonAttribute = person.getAttribute("Enterprise");
+    		String enterpriseIdGuid = enterprisePersonAttribute.getValue();
+    		Enterprise eps = enterpriseService.getEnterpriseByUuid(enterpriseIdGuid);
+    		String epsGuid = eps.getUuid();
+    		
             List<Extension> exts = appFrameworkService.getExtensionsForCurrentUser(AppUiExtensions.HEADER_CONFIG_EXTENSION);
             Extension lowestOrderExtension = getLowestOrderExtenstion(exts);
 			
-			List<Location> loginLocations = appFrameworkService.getLoginLocations();
-			fragmentModel.addAttribute("locationsbyEnterprise", getLocationsbyEnterprise(loginLocations, enterpriseService));
-			
+			fragmentModel.addAttribute("locationsbyEnterprise", getLoginLocationsByEnterpriseGuid(
+					Context.getLocationService(), epsGuid));
+
             Map<String, Object> configSettings = lowestOrderExtension.getExtensionParams();
             fragmentModel.addAttribute("configSettings", configSettings);
             List<Extension> userAccountMenuItems = appFrameworkService.getExtensionsForCurrentUser(AppUiExtensions.HEADER_USER_ACCOUNT_MENU_ITEMS_EXTENSION);
@@ -72,6 +81,13 @@ public class HeaderFragmentController {
             Context.removeProxyPrivilege(GET_LOCATIONS);
             Context.removeProxyPrivilege(VIEW_LOCATIONS);
         }
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Location> getLoginLocationsByEnterpriseGuid(LocationService ls, String enterpriseId) {
+        LocationTag supportsLogin = ls.getLocationTagByName(
+        		AppFrameworkConstants.LOCATION_TAG_SUPPORTS_LOGIN);
+        return ls.getLocationsByTagAndEnterpriseId(supportsLogin, enterpriseId);
     }
 
     public Extension getLowestOrderExtenstion(List<Extension> exts) {
@@ -98,31 +114,6 @@ public class HeaderFragmentController {
     	Enterprise eps = es.getEnterpriseByUuid(enterpriseIdGuid);
 
 		return eps.getName();
-    	
     }
 	
-	public List<Location> getLocationsbyEnterprise(List<Location> locations, EnterpriseService es) {
-		List<Location> locationsbyEnterprise = new ArrayList<Location>();
-		User user = Context.getAuthenticatedUser();
-		PersonService ps = Context.getPersonService();
-		Person person = ps.getPerson(user.getId());
-		PersonAttribute enterprisePersonAttribute = person.getAttribute("Enterprise");
-		String enterpriseIdGuid = enterprisePersonAttribute.getValue();
-		Enterprise eps = es.getEnterpriseByUuid(enterpriseIdGuid);
-		String epsGuid = eps.getUuid();
-		LocationService ls = Context.getLocationService();
-		LocationAttributeType latForEnterprise = ls.getLocationAttributeTypeByName("Enterprise");
-
-		for (Location location : locations) {
-			Set<LocationAttribute> locationAttributes = location.getAttributes();
-			
-			for (LocationAttribute locationAttribute : locationAttributes) {
-				if (locationAttribute.getAttributeType().equals(latForEnterprise)
-				        && locationAttribute.getValueReference().equals(epsGuid)) {
-					locationsbyEnterprise.add(location);
-				}
-			}
-		}
-		return locationsbyEnterprise;
-	}
 }
