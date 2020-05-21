@@ -15,22 +15,17 @@
 package org.openmrs.module.appui.fragment.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
-import org.openmrs.LocationAttributeType;
 import org.openmrs.LocationTag;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.User;
 import org.openmrs.api.LocationService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appframework.AppFrameworkConstants;
 import org.openmrs.module.appframework.domain.Extension;
@@ -58,8 +53,8 @@ public class HeaderFragmentController {
             Context.addProxyPrivilege(GET_LOCATIONS);
             Context.addProxyPrivilege(VIEW_LOCATIONS);
             User user = Context.getAuthenticatedUser();
-    		PersonService ps = Context.getPersonService();
-    		Person person = ps.getPerson(user.getId());
+    		Context.getPersonService();
+			Person person = user.getPerson();
     		PersonAttribute enterprisePersonAttribute = person.getAttribute("Enterprise");
     		String enterpriseIdGuid = enterprisePersonAttribute.getValue();
     		Enterprise eps = enterpriseService.getEnterpriseByUuid(enterpriseIdGuid);
