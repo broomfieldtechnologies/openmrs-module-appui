@@ -11,6 +11,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.module.appframework.context.AppContextModel;
 import org.openmrs.module.appframework.context.SessionContext;
+import org.openmrs.module.enterprise.Enterprise;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.util.PrivilegeConstants;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpSession;
 
 public class UiSessionContext extends SessionContext {
 
-    public final static String LOCATION_SESSION_ATTRIBUTE = "emrContext.sessionLocationId";
+    public final static String LOCATION_SESSION_ATTRIBUTE = "emrContext.pId";
 
     protected LocationService locationService;
 
@@ -49,11 +50,23 @@ public class UiSessionContext extends SessionContext {
         this.locationService = locationService;
         this.providerService = providerService;
         this.session = request.getSession();
+        Location getSessionLocation = new Location();
         Integer locationId = (Integer) session.getAttribute(LOCATION_SESSION_ATTRIBUTE);
         if (locationId != null) {
-            this.setSessionLocationId(locationId);
-            sessionLocation = locationService.getLocation(locationId);
+        List<Location> locationForEnterprise = locationService.getAllLocationsForEnterpriseId(true);
+        for(Location l : locationForEnterprise) {
+        	if(l.getLocationId() == locationId) {       		
+                    this.setSessionLocationId(locationId);
+                    sessionLocation = locationService.getLocation(locationId);
+                }else {
+                	getSessionLocation = locationService.getLocation(l.getLocationId());
+                }
+        	}
         }
+        if(sessionLocation == null) {
+        	sessionLocation = getSessionLocation;
+        }
+        
         userContext = Context.getUserContext();
         if (userContext != null && userContext.getAuthenticatedUser() != null) {
             User currentUser = userContext.getAuthenticatedUser();
