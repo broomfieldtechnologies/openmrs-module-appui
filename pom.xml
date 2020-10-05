@@ -38,7 +38,7 @@
         <appframeworkVersion>2.9</appframeworkVersion>
         <openMRSVersion>2.3.0</openMRSVersion>
         <serialization.xstreamVersion>0.2.12</serialization.xstreamVersion>
-        <webservices.restVersion>2.16</webservices.restVersion>
+        <webservices.restVersion>2.28.0</webservices.restVersion>
         <enterpriseModuleVersion>1.0.0-SNAPSHOT</enterpriseModuleVersion>
          <javaxServeletVersion>3.0.1</javaxServeletVersion>
         
