@@ -128,6 +128,9 @@
             </a>
         </li>
         <li class="logout">
+	  <a href="#" onclick="window.open('/openmrs/appui/help.page', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');">Help-123</a>
+        </li>
+        <li class="logout">
             <a href="${ ui.actionLink("logout", ["successUrl": contextPath]) }">
                 ${ui.message("emr.logout")}
                 <i class="icon-signout small"></i>

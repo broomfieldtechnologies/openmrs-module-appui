@@ -100,6 +100,15 @@ public class HeaderFragmentController {
         request.getSession().invalidate();
         request.getSession().setAttribute(AppUiConstants.SESSION_ATTRIBUTE_MANUAL_LOGOUT, "true");
     }
+    
+ 
+    public void help(HttpServletRequest request) {
+    	System.out.println("This is your help menu.");
+    	System.out.println("context path is " + request.getContextPath());
+    	//return "redirect:/openmrs/appui/help.page";
+    }
+    
+    
     public String getEnterpriseName(EnterpriseService es) {
     	Context.getService(EnterpriseService.class);
 		User user = Context.getAuthenticatedUser();
